@@ -31,8 +31,6 @@
 #include <QPixmap>
 #ifdef _WIN32
 #include <armadilloWin32/armadillo>
-#else
-#include <armadilloLinux/armadillo>
 #endif
 using namespace arma;
 //#include <list>

@@ -30,8 +30,8 @@ void MainWindow::blinking()
 }
 void MainWindow::ShowPos()
 {
-    mouseX=QCursor::pos().x();
-    mouseY=QCursor::pos().y();
+    mouseX=this->mapFromGlobal(QCursor::pos()).x();
+    mouseY=this->mapFromGlobal(QCursor::pos()).y();
     isScreenUp2Date = false;
     //this->setMouseTracking(true);
     float azi,range;
@@ -63,11 +63,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //load map
     connect(udpSocket, SIGNAL(readyRead()),
             this, SLOT(processFrame()));
-
     //vnmap.LoadBinFile(config.m_config.mapFilename.data());
     //printf("%f",config.m_config.m_long);
     resetScale();
-    DrawMap();
     connect(&dataUpdate,SIGNAL(timeout()),this,SLOT(playbackRadarData()));
     connect(&warningBlink,SIGNAL(timeout()),this,SLOT(blinking()));
     warningBlink.start(1000);
