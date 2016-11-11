@@ -446,7 +446,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>10</y>
+      <y>50</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -872,14 +872,14 @@
 font: 12pt &quot;MS Shell Dlg 2&quot;;</string>
     </property>
     <property name="text">
-     <string>+</string>
+     <string>-</string>
     </property>
    </widget>
    <widget class="QHoverSensitiveButton" name="toolButton_zoomOut">
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>50</y>
+      <y>10</y>
       <width>41</width>
       <height>41</height>
      </rect>
@@ -1306,7 +1306,7 @@ font: 75 12pt &quot;MS Shell Dlg 2&quot;;
 </string>
     </property>
     <property name="text">
-     <string>-</string>
+     <string>+</string>
     </property>
    </widget>
    <widget class="QHoverSensitiveButton" name="toolButton_zoomOut_2">
