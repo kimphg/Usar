@@ -11,7 +11,7 @@ char range = 1;
 float turningAngle = 0;
 float heading = 0;
 bool blink = true;
-short                mouseX,mouseY;
+short           mouseX,mouseY;
 QTimer          dataUpdate;
 QTimer          warningBlink;
 C_radar_data*   radarData;
@@ -26,6 +26,11 @@ void MainWindow::blinking()
 {
     if(blink)blink=false;
     else blink = true;
+    for(uint i=0;i<arpaData->track_list.size();i++)
+    {
+
+        if(arpaData->track_list[i].lives>0)arpaData->track_list[i].lives--;
+    }
 
 }
 void MainWindow::ShowPos()
@@ -180,19 +185,21 @@ void MainWindow::drawTarget(QPainter *p)
     {
         short x,y;
         if(! arpaData->track_list[i].lives)continue;
-        float target_azi;
+        float target_azi,target_rg;
         for(uint j=0;j<(arpaData->track_list[i].object_list.size());j++)
         {
             float tx =  arpaData->track_list[i].object_list[j].centerX*scale;
             float ty =  arpaData->track_list[i].object_list[j].centerY*scale;
             x = tx * cosf(turningAngle) - ty * sinf(turningAngle)+(scrCtX-dx);
             y = tx * sinf(turningAngle) + ty * cosf(turningAngle)+(scrCtY-dy);
-            target_azi = arpaData->track_list[i].object_list[j].centerA;
+
             //printf("\n x:%d y:%d",x,y);
             p->setPen(penTrack);
             p->drawPoint(x,y);
         }
-        float angle = abs((heading/360.0*PI_NHAN2)-target_azi);
+        target_azi = arpaData->track_list[i].object_list[arpaData->track_list.size()-1].centerA;
+        target_rg = arpaData->track_list[i].object_list[arpaData->track_list.size()-1].centerR;
+        float angle = abs((heading/360.0*PI_NHAN2)-target_azi)&&target_rg<7;
         //printf("\nangle:%f",angle);
         bool warning = (abs(angle)<0.3||(abs(angle)>6.28-0.3));
         QPolygon poly;
@@ -263,11 +270,14 @@ void MainWindow::drawTarget(QPainter *p)
 //        }
         p->setPen(penTarget);
         p->drawPolygon(poly);
-        QFont font;
-        font.setBold(false);
-        font.setPointSize(8);
-        p->setFont(font);
-        p->drawText(x-20,y-20,100,100,0, arpaData->track_list[i].id.data(),0);
+        if(ui->toolButton_zoomIn_12->isChecked())
+        {
+            QFont font;
+            font.setBold(false);
+            font.setPointSize(8);
+            p->setFont(font);
+            p->drawText(x-20,y-20,100,100,0, arpaData->track_list[i].id.data(),0);
+        }
     }
 }
 bool isInit = false;

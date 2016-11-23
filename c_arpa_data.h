@@ -30,7 +30,7 @@ public:
         centerR =   newobj->centerR;
         course = newobj->course ;
         velocity =  newobj->velocity;
-        lives = 20;
+        lives = 40;
     }
 
     float          centerX,centerY;

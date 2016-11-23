@@ -11370,7 +11370,7 @@ font: 10pt bold  &quot;MS Shell Dlg 2&quot;;
 </string>
     </property>
     <property name="text">
-     <string>TRIAL</string>
+     <string>T NAME</string>
     </property>
     <property name="checkable">
      <bool>true</bool>
