@@ -86,7 +86,6 @@ void Q_vnmap::ClearData()
 void Q_vnmap::LoadBinFile(const char* fileName)
 {
 
-
     FILE *pFile= fopen(fileName,"rb");
     if (!pFile)
     {
@@ -128,9 +127,9 @@ void Q_vnmap::LoadBinFile(const char* fileName)
         {
 
             Point_t pPoint;
-            pPoint.m_Lat = (float)((unsigned short) ((szBuff[fPos+i  ] ) |(szBuff[fPos+i+1])<<8))/3276.8f +5.0f;// 3276.8 = 2^16/20
+            pPoint.m_Lat = (float)((unsigned short) ((szBuff[fPos+i  ] ) |(szBuff[fPos+i+1])<<8))/3276.8f +5.0f - 0.006;// 3276.8 = 2^16/20
             i+=2;
-            pPoint.m_Long = (float)((unsigned short) ((szBuff[fPos+i  ]  ) |(szBuff[fPos+i+1])<<8))/3276.8f +100.0f;
+            pPoint.m_Long = (float)((unsigned short) ((szBuff[fPos+i  ]  ) |(szBuff[fPos+i+1])<<8))/3276.8f +100.0f- 0.004;
             i+=2;
             pPoly.push_back(pPoint);
             if(!inside)

@@ -24,6 +24,8 @@ QUdpSocket      *udpSocket;
 
 void MainWindow::blinking()
 {
+    vnmap.setUp(config.m_config.m_lat,config.m_config.m_long+config.m_config.scale, 150,config.m_config.mapFilename.data());
+    DrawMap();
     if(blink)blink=false;
     else blink = true;
     for(uint i=0;i<arpaData->track_list.size();i++)
@@ -73,29 +75,30 @@ MainWindow::MainWindow(QWidget *parent) :
     resetScale();
     connect(&dataUpdate,SIGNAL(timeout()),this,SLOT(playbackRadarData()));
     connect(&warningBlink,SIGNAL(timeout()),this,SLOT(blinking()));
-    warningBlink.start(1000);
+    warningBlink.start(3000);
     //arpaData->addARPA("sss",12,PI_CHIA2/2,PI_CHIA2,2);
     //
     if(!logFile.open(QIODevice::WriteOnly))return;
     QRect rec = QApplication::desktop()->screenGeometry(0);
     setFixedSize(1024, 768);
-    if((rec.height()==768)&&(rec.width()==1024))
-    {
-        this->showFullScreen();
-        this->setGeometry(QApplication::desktop()->screenGeometry(0));//show on first screen
-    }
-    else
-    {
+    setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+//    if((rec.height()==768)&&(rec.width()==1024))
+//    {
+//        this->showFullScreen();
+//        this->setGeometry(QApplication::desktop()->screenGeometry(0));//show on first screen
+//    }
+//    else
+//    {
 
-        rec = QApplication::desktop()->screenGeometry(1);
-        if((rec.height()==768)&&(rec.width()==1024))
-        {
-            this->showFullScreen();
-            this->setGeometry(QApplication::desktop()->screenGeometry(0));//show on first screen
-        }
+//        rec = QApplication::desktop()->screenGeometry(1);
+//        if((rec.height()==768)&&(rec.width()==1024))
+//        {
+//            this->showFullScreen();
+//            this->setGeometry(QApplication::desktop()->screenGeometry(0));//show on first screen
+//        }
 
-    }
-    vnmap.setUp(config.m_config.m_lat,config.m_config.m_long+config.m_config.scale, 500,config.m_config.mapFilename.data());
+//    }
+    vnmap.setUp(config.m_config.m_lat,config.m_config.m_long+config.m_config.scale, 150,config.m_config.mapFilename.data());
     DrawMap();
     update();
 
@@ -184,7 +187,11 @@ void MainWindow::drawTarget(QPainter *p)
     for(uint i=0;i<arpaData->track_list.size();i++)
     {
         short x,y;
-        if(! arpaData->track_list[i].lives)continue;
+        if(!arpaData->track_list[i].lives)
+        {
+            arpaData->track_list.erase(arpaData->track_list.begin()+i);
+            continue;
+        }
         float target_azi,target_rg;
         for(uint j=0;j<(arpaData->track_list[i].object_list.size());j++)
         {
@@ -192,16 +199,16 @@ void MainWindow::drawTarget(QPainter *p)
             float ty =  arpaData->track_list[i].object_list[j].centerY*scale;
             x = tx * cosf(turningAngle) - ty * sinf(turningAngle)+(scrCtX-dx);
             y = tx * sinf(turningAngle) + ty * cosf(turningAngle)+(scrCtY-dy);
-
+            target_azi = arpaData->track_list[i].object_list[j].centerA;
+            target_rg = arpaData->track_list[i].object_list[j].centerR;
             //printf("\n x:%d y:%d",x,y);
             p->setPen(penTrack);
             p->drawPoint(x,y);
         }
-        target_azi = arpaData->track_list[i].object_list[arpaData->track_list.size()-1].centerA;
-        target_rg = arpaData->track_list[i].object_list[arpaData->track_list.size()-1].centerR;
-        float angle = abs((heading/360.0*PI_NHAN2)-target_azi)&&target_rg<7;
+
+        float angle = abs((heading/360.0*PI_NHAN2)-target_azi);
         //printf("\nangle:%f",angle);
-        bool warning = (abs(angle)<0.3||(abs(angle)>6.28-0.3));
+        bool warning = (abs(angle)<0.3||(abs(angle)>6.28-0.3))&&target_rg<7;
         QPolygon poly;
         QPoint point;
         if(warning)
@@ -304,8 +311,8 @@ void MainWindow::processFrame()
                         config.m_config.m_long = (*(strList.begin()+2)).toFloat();
                         isInit=true;
                         config.SaveToFile();
-                        vnmap.setUp(config.m_config.m_lat,config.m_config.m_long+config.m_config.scale, 500,config.m_config.mapFilename.data());
-                        DrawMap();
+
+
                         ui->label_heading->setText(QString::number((*(strList.begin()+4)).toFloat())+"\260");
                         setDisplayHeading((*(strList.begin()+4)).toFloat());
                         if(isDisplayHeading)
@@ -693,7 +700,7 @@ void MainWindow::on_toolButton_tx_clicked()
 
 void MainWindow::on_toolButton_zoomIn_4_clicked()
 {
-    vnmap.setUp(config.m_config.m_lat,config.m_config.m_long+config.m_config.scale, 500,config.m_config.mapFilename.data());
+    vnmap.setUp(config.m_config.m_lat,config.m_config.m_long+config.m_config.scale, 150,config.m_config.mapFilename.data());
     DrawMap();
     update();
 }
