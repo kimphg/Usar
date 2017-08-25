@@ -56,7 +56,7 @@ void CConfig::setDefault()
     m_config.dyView     = 0;
     m_config.mapEnabled = true;
     m_config.shipName   = SHIP_NAME;
-    m_config.arpaPort   = 1989;
+    m_config.arpaPort   = 7777;
     SaveToFile();
 	//m_config.mapFilename.Empty();
 	

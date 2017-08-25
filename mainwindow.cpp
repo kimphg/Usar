@@ -79,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //arpaData->addARPA("sss",12,PI_CHIA2/2,PI_CHIA2,2);
     //
     if(!logFile.open(QIODevice::WriteOnly))return;
-    QRect rec = QApplication::desktop()->screenGeometry(0);
+    //QRect rec = //QApplication::desktop()->screenGeometry(0);
     setFixedSize(1024, 768);
     setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 //    if((rec.height()==768)&&(rec.width()==1024))
@@ -341,25 +341,7 @@ void MainWindow::processFrame()
          }
 
 }
-void MainWindow::newConnection()
-{
-    // need to grab the socket
-    QTcpSocket *socket = controlServer->nextPendingConnection();
 
-    //printf("\nHello client\r\n");
-    //socket->flush();
-    //QHash <QString, QString>  htable;//!!!!!!!!!!
-    socket->waitForBytesWritten(300);
-    QByteArray array = socket->read(1000);
-    QTextStream outStream(&logFile);
-    outStream<<"\n --New Message in ascii :";
-    outStream<<QString::fromAscii(array.data(),array.size());
-    outStream<<"\n --New Message in stdstring :";
-    outStream<<QString::fromWCharArray((wchar_t*)(array.data()),array.size());
-    //
-    //printf(array.data());
-    socket->close();
-}
 void MainWindow::playbackRadarData()
 {
     ShowPos();

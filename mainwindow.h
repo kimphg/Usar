@@ -39,7 +39,6 @@ protected:
 private slots:
     void blinking();
     void playbackRadarData();
-    void newConnection();
     void processFrame();
 
 
@@ -65,8 +64,6 @@ private slots:
 
     void on_toolButton_zoomIn_4_toggled(bool checked);
 
-private:
-    QTcpServer *controlServer;
 };
 
 #endif // MAINWINDOW_H
