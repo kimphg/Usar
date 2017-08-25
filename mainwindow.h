@@ -64,6 +64,15 @@ private slots:
 
     void on_toolButton_zoomIn_4_toggled(bool checked);
 
+    void on_toolButton_rain_clicked();
+
+    void on_toolButton_gain_clicked();
+
+    void on_toolButton_sea_clicked();
+
+private:
+    QTcpServer *controlServer;
+
 };
 
 #endif // MAINWINDOW_H

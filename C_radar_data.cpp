@@ -14,6 +14,7 @@ C_radar_data::C_radar_data()
     thresh = 3;
     isProcessing = true;
     brightness = 10;
+    noiseLevel = 2000000;
     setTrueN(0);
     resetData(true);
 }
@@ -71,7 +72,7 @@ void C_radar_data::GetDataSimulator(QPixmap* image,unsigned short azi)
         x = sinf(alpha)*i;
         y = -cosf(alpha)*i;
         if(abs(x)>=imgctx||abs(y)>=imgcty)break;
-        if(!(rand()%(10+i/100)))
+        if(!(rand()%(1+i/60)))
         {
             if(((img.pixel(imgctx+x,imgcty+y)!=img.pixel(imgctx+x+1,imgcty+y))||(img.pixel(imgctx+x,imgcty+y)!=img.pixel(imgctx+x,imgcty+y+1))))
             {
@@ -81,23 +82,30 @@ void C_radar_data::GetDataSimulator(QPixmap* image,unsigned short azi)
             }
             else
             {
-
-                signal_map.frame[azi].raw_map[i].cfar =0;
-                short l = 0;
-                bool nearby = false;
-                for(short k= azi-10;;k++)
+                if(!(rand()%(noiseLevel)))
                 {
-                    l++;
-                    if(l>20)break;
-                    if(k<0)k+=MAX_AZIR;
-                    if(k>=MAX_AZIR)k-=MAX_AZIR;
-                    if(signal_map.frame[k].raw_map[i].cfar)
-                    {
-                        nearby=true;
-                        sgn_img->setPixel(signal_map.frame[azi].raw_map[i].x,signal_map.frame[azi].raw_map[i].y,0xffffff00-0x00151500*abs(l-10));
-                    }
+                    sgn_img->setPixel(signal_map.frame[lastazi].raw_map[i].x,signal_map.frame[lastazi].raw_map[i].y,0xffffff00);
+                    signal_map.frame[azi].raw_map[i].cfar  = 255;
                 }
-                if(!nearby)sgn_img->setPixel(signal_map.frame[lastazi].raw_map[i].x,signal_map.frame[lastazi].raw_map[i].y,0xff0000ff);
+                else
+                {
+                    signal_map.frame[azi].raw_map[i].cfar =0;
+                    short l = 0;
+                    bool nearby = false;
+                    for(short k= azi-10;;k++)
+                    {
+                        l++;
+                        if(l>20)break;
+                        if(k<0)k+=MAX_AZIR;
+                        if(k>=MAX_AZIR)k-=MAX_AZIR;
+                        if(signal_map.frame[k].raw_map[i].cfar)
+                        {
+                            nearby=true;
+                            sgn_img->setPixel(signal_map.frame[azi].raw_map[i].x,signal_map.frame[azi].raw_map[i].y,0xffffff00-0x00151500*abs(l-10));
+                        }
+                    }
+                    if(!nearby)sgn_img->setPixel(signal_map.frame[lastazi].raw_map[i].x,signal_map.frame[lastazi].raw_map[i].y,0xff0000ff);
+                }
             }
         }
         else

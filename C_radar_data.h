@@ -302,6 +302,7 @@ public:
     markList                mark_list;
     signal_map_t            signal_map;
     unsigned char           thresh,overload,brightness;
+    int                  noiseLevel;
     bool spreading;
     float                   temp;
     float                   trueN;

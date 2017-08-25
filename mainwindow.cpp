@@ -706,3 +706,18 @@ void MainWindow::on_toolButton_zoomIn_4_toggled(bool checked)
 {
 
 }
+
+void MainWindow::on_toolButton_rain_clicked()
+{
+    radarData->noiseLevel = 10000;
+}
+
+void MainWindow::on_toolButton_gain_clicked()
+{
+    radarData->noiseLevel = 200000;
+}
+
+void MainWindow::on_toolButton_sea_clicked()
+{
+    radarData->noiseLevel = 2000;
+}
